@@ -6,4 +6,5 @@ before_install:
         - sudo apt-get -qq install xmonad
         - sudo apt-get -qq install ghc
 
-script: test
+script:
+        - make 

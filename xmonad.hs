@@ -1,0 +1,59 @@
+import System.IO
+import System.Exit
+
+import XMonad
+import XMonad.Hooks.DynamicLog 
+import XMonad.Config.Gnome
+import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.CustomKeys
+import XMonad.Util.Font
+
+import XMonad.Actions.CycleWS
+import XMonad.Layout.Tabbed
+import XMonad.Layout.Named
+import XMonad.Layout.NoBorders
+import XMonad.Hooks.ManageDocks
+
+
+
+
+import qualified Data.Map as M 
+
+myConf      = gnomeConfig
+
+altMask = mod1Mask
+winMask = mod4Mask
+myMask  = altMask
+
+myKeys conf = M.fromList $  
+			  [
+				((myMask, xK_F5), spawn $ XMonad.terminal conf ),
+				((myMask, xK_F5), spawn "xterm"),
+				((myMask, xK_F2), spawn "dmenu_run"),
+				((controlMask .|. shiftMask, xK_F12), io (exitWith ExitSuccess) ),
+				((myMask .|. controlMask, xK_Left),  prevWS),
+				((myMask .|. controlMask, xK_Right), nextWS)
+			  ]
+
+
+myTab = named "tab" $ avoidStruts $ noBorders simpleTabbed 
+myLayout = myTab
+
+
+main = 
+	do
+	xmproc <- spawnPipe "xmobar"
+	xmonad $ myConf 
+				{
+					  logHook = dynamicLogWithPP xmobarPP
+							  {
+								 ppOutput = hPutStrLn xmproc 
+							   , ppLayout = const "" 
+							   , ppTitle  = xmobarColor "green" "" . shorten 80 	
+							  }
+					, keys       = myKeys  
+					, layoutHook = myLayout
+				}
+
+
+  

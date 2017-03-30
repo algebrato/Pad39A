@@ -2,7 +2,6 @@ import System.IO
 import System.Exit
 
 import XMonad
-import XMonad.Hooks.DynamicLog 
 import XMonad.Config.Gnome
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.CustomKeys
@@ -12,10 +11,11 @@ import XMonad.Actions.CycleWS
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
+
 import XMonad.Hooks.ManageDocks
-
-
-
+import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.SetWMName
+import XMonad.Hooks.DynamicLog
 
 import qualified Data.Map as M 
 
@@ -51,6 +51,8 @@ main =
 							   , ppLayout = const "" 
 							   , ppTitle  = xmobarColor "green" "" . shorten 80 	
 							  }
+							  >> ewmhDesktopsLogHook
+						 	  >> setWMName "LG3D"
 					, keys       = myKeys  
 					, layoutHook = myLayout
 				}

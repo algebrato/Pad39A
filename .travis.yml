@@ -1,0 +1,8 @@
+language: haskell
+
+sudo: required
+
+before_install:
+        - sudo apt-get update && sudo apt-get -qq upgrade
+        - sudo apt-get -qq install xmonad
+        - sudo apt-get -qq install ghc

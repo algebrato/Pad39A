@@ -19,7 +19,7 @@ import XMonad.Hooks.DynamicLog
 
 import qualified Data.Map as M 
 
-myConf      = gnomeConfig
+myConf = gnomeConfig
 
 altMask = mod1Mask
 winMask = mod4Mask

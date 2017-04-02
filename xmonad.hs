@@ -30,6 +30,8 @@ myKeys conf = M.fromList $
 				((myMask, xK_F5), spawn $ XMonad.terminal conf ),
 				((myMask, xK_F5), spawn "xterm"),
 				((myMask, xK_F2), spawn "dmenu_run"),
+				((myMask, xK_F8), spawn "xbacklight -dec 10"),
+				((myMask, xK_F9), spawn "xbacklight -inc 10"),
 				((controlMask .|. shiftMask, xK_F12), io (exitWith ExitSuccess) ),
 				((myMask .|. controlMask, xK_Left),  prevWS),
 				((myMask .|. controlMask, xK_Right), nextWS)

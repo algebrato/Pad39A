@@ -1,0 +1,6 @@
+function genmakefile {
+	echo -e "GHC:=ghc" > ../Makefile
+	echo -e "EXE:=xmonad-x86_64-linux\n\n" >>../Makefile
+	echo -e "all:">>../Makefile
+	echo -e "\t\$(GHC) xmonad.hs -o \$(EXE) && mv \$(EXE) ~/.xmonad/.">>../Makefile
+} 

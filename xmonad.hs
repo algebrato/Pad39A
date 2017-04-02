@@ -25,17 +25,21 @@ altMask = mod1Mask
 winMask = mod4Mask
 myMask  = altMask
 
-myKeys conf = M.fromList $  
-			  [
-				((myMask, xK_F5), spawn $ XMonad.terminal conf ),
-				((myMask, xK_F5), spawn "xterm"),
-				((myMask, xK_F2), spawn "dmenu_run"),
-				((myMask, xK_F8), spawn "xbacklight -dec 10"),
-				((myMask, xK_F9), spawn "xbacklight -inc 10"),
-				((controlMask .|. shiftMask, xK_F12), io (exitWith ExitSuccess) ),
-				((myMask .|. controlMask, xK_Left),  prevWS),
-				((myMask .|. controlMask, xK_Right), nextWS)
-			  ]
+myWorkspaces = (miscs 8) ++ ["fullscreen", "im"]
+	where miscs = map (("F" ++) . show) . (flip take) [1..] 
+isFullscreen = (== "fullscreen")
+
+
+myKeys conf = M.fromList $[
+	((myMask, xK_F5), spawn $ XMonad.terminal conf ),
+	((myMask, xK_F5), spawn "xterm"),
+	((myMask, xK_F2), spawn "dmenu_run"),
+	((myMask, xK_F8), spawn "xbacklight -dec 10"),
+	((myMask, xK_F9), spawn "xbacklight -inc 10"),
+	((controlMask .|. shiftMask, xK_F12), io (exitWith ExitSuccess) ),
+	((myMask .|. controlMask, xK_Left),  prevWS),
+	((myMask .|. controlMask, xK_Right), nextWS)
+]
 
 
 myTab = named "tab" $ avoidStruts $ noBorders simpleTabbed 
@@ -45,19 +49,18 @@ myLayout = myTab
 main = 
 	do
 	xmproc <- spawnPipe "xmobar"
-	xmonad $ myConf 
-				{
-					  logHook = dynamicLogWithPP xmobarPP
-							  {
-								 ppOutput = hPutStrLn xmproc 
-							   , ppLayout = const "" 
-							   , ppTitle  = xmobarColor "green" "" . shorten 80 	
-							  }
-							  >> ewmhDesktopsLogHook
-						 	  >> setWMName "LG3D"
-					, keys       = myKeys  
-					, layoutHook = myLayout
-				}
+	xmonad $ myConf {
+	  logHook = dynamicLogWithPP xmobarPP{
+ 	    ppOutput = hPutStrLn xmproc 
+	    , ppLayout = const "" 
+	    , ppTitle  = xmobarColor "green" "" . shorten 80
+	  }
+	  >> ewmhDesktopsLogHook
+	  >> setWMName "LG3D"
+	  , keys       = myKeys
+	  , layoutHook = myLayout
+	  , workspaces = myWorkspaces
+	}
 
 
   

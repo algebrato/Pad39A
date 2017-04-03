@@ -11,6 +11,10 @@ import XMonad.Actions.CycleWS
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
+import XMonad.Layout.WindowNavigation
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Fullscreen
+import XMonad.Layout.SubLayouts
 
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.EwmhDesktops
@@ -21,30 +25,56 @@ import qualified Data.Map as M
 
 myConf = gnomeConfig
 
+
+-- CONFIGURAZIONE TASTI; GLOBAL ENV; SETTARE myMask COME CI SI TROVA MEGLIO --
 altMask = mod1Mask
 winMask = mod4Mask
 myMask  = altMask
+myNB  = "#FDFDC3"
+myFC  = "#3398CE"
 
+
+
+
+-- CONFIGURAZIONE CARINA DEI WORKSPACES: CON NOME F:n --
 myWorkspaces = (miscs 8) ++ ["fullscreen", "im"]
 	where miscs = map (("F" ++) . show) . (flip take) [1..] 
 isFullscreen = (== "fullscreen")
 
 
+-- KEYBINDING IN FUNZIONE A myMask --
 myKeys conf = M.fromList $[
 	((myMask, xK_F5), spawn $ XMonad.terminal conf ),
 	((myMask, xK_F5), spawn "xterm"),
 	((myMask, xK_F2), spawn "dmenu_run"),
 	((myMask, xK_F8), spawn "xbacklight -dec 10"),
 	((myMask, xK_F9), spawn "xbacklight -inc 10"),
+	((myMask .|. controlMask, xK_r), spawn "xmonad --restart"), --Utile quando si è un modalità di debug --
 	((controlMask .|. shiftMask, xK_F12), io (exitWith ExitSuccess) ),
 	((myMask .|. controlMask, xK_Left),  prevWS),
 	((myMask .|. controlMask, xK_Right), nextWS)
-]
+	]
 
 
-myTab = named "tab" $ avoidStruts $ noBorders simpleTabbed 
-myLayout = myTab
+-- CONFIGURAZIONE DEL LAYOUT --
 
+myLayout = windowNavigation $ normal 
+	where    normal = tallLayout
+		      ||| wideLayout
+		      ||| tabbedLayout
+
+tallLayout   = named "tall" $ avoidStruts $ subTabbed $ basicLayout
+wideLayout   = named "wide" $ avoidStruts $ subTabbed $ Mirror basicLayout
+tabbedLayout = named "tab"  $ avoidStruts $ noBorders simpleTabbed
+
+basicLayout = Tall nmaster delta ratio where
+    nmaster = 1
+    delta   = 3/100
+    ratio   = 1/2
+
+
+
+-- MAIN --
 
 main = 
 	do
@@ -60,6 +90,8 @@ main =
 	  , keys       = myKeys
 	  , layoutHook = myLayout
 	  , workspaces = myWorkspaces
+	  , normalBorderColor = myNB
+	  , focusedBorderColor = myFC
 	}
 
 

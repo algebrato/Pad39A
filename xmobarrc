@@ -1,20 +1,20 @@
 Config {
-    font = "-*-terminus-bold-*-*-*-15-*-*-*-*-94-iso8859-1",
+    font = "xft:terminus:size=FONT:antialias=true",
     bgColor = "#3300FF",
     fgColor = "green",
-    position = Static { xpos = 0 , ypos = 0, width = 1266, height = 15 },
+    position = Static { xpos = 0 , ypos = 0, width = WIDTHB, height = HBAR },
     lowerOnStart = True,
     commands = [
 	    Run MultiCpu ["-t","Cpu: <total0> <total1> <total2> <total3>","-L","30","-H","60","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC","-w","3"] 10,
 		Run Memory  ["-t","Mem: <usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
 		Run Swap ["-t","Swap: <usedratio>%","-H","1024","-L","512","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
-		Run Network "eth0" ["-L","0","-H","32","--normal","green","--high","red"] 60,
-		Run Network "wlan0" ["-L","0","-H","50","--normal","green","--high","red"] 60,
+		Run Network "ETH" ["-L","0","-H","32","--normal","green","--high","red"] 60,
+		Run Network "WLAN" ["-L","0","-H","50","--normal","green","--high","red"] 60,
 		Run Date "%a %b %_d %Y %H:%M:%S" "date" 50,	
 		Run Battery  ["-L","20","-H","80"] 50,
 		Run Com "uname" ["-s","-r"] "" 36000,
 		Run StdinReader
     ],
     sepChar = "%",
-    alignSep = "}{", template = "%StdinReader% }{  <fc=#FAB631> %battery%</fc>  | %multicpu% |  %eth0% %wlan0% | <fc=#FFFFCC>%date%</fc> | %uname%"}
+    alignSep = "}{", template = "%StdinReader% }{  <fc=#FAB631> %battery%</fc>  | %multicpu% |  %ETH% %WLAN% | <fc=#FFFFCC>%date%</fc> | %uname%"}
 

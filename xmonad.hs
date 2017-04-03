@@ -22,6 +22,7 @@ import XMonad.Hooks.SetWMName
 import XMonad.Hooks.DynamicLog
 
 import qualified Data.Map as M 
+import qualified XMonad.StackSet as S
 
 myConf = gnomeConfig
 
@@ -30,8 +31,8 @@ myConf = gnomeConfig
 altMask = mod1Mask
 winMask = mod4Mask
 myMask  = altMask
-myNB  = "#FDFDC3"
-myFC  = "#3398CE"
+myNB  = "#0000FF"
+myFC  = "#FF0000"
 
 
 
@@ -52,26 +53,32 @@ myKeys conf = M.fromList $[
 	((myMask .|. controlMask, xK_r), spawn "xmonad --restart"), --Utile quando si è un modalità di debug --
 	((controlMask .|. shiftMask, xK_F12), io (exitWith ExitSuccess) ),
 	((myMask .|. controlMask, xK_Left),  prevWS),
-	((myMask .|. controlMask, xK_Right), nextWS)
+	((myMask .|. controlMask, xK_Right), nextWS),
+	((myMask, xK_space), sendMessage NextLayout),
+	((altMask, xK_Tab), windows S.focusDown),
+	((altMask .|. controlMask .|. shiftMask, xK_Left), shiftToPrev),
+	((altMask .|. controlMask .|. shiftMask, xK_Right), shiftToNext),
+    ((winMask .|. altMask  , xK_k  )   , sendMessage Shrink),
+    ((winMask .|. altMask  , xK_l )    , sendMessage Expand)
 	]
 
 
 -- CONFIGURAZIONE DEL LAYOUT --
 
-myLayout = windowNavigation $ normal 
-	where    normal = tallLayout
-		      ||| wideLayout
-		      ||| tabbedLayout
+myLayout =  windowNavigation $ fullscreen $ normal  where
+	normal = tallLayout ||| wideLayout ||| tabbedLayout
+	fullscreen = onWorkspace "fullscreen" fullscreenLayout
+
 
 tallLayout   = named "tall" $ avoidStruts $ subTabbed $ basicLayout
 wideLayout   = named "wide" $ avoidStruts $ subTabbed $ Mirror basicLayout
 tabbedLayout = named "tab"  $ avoidStruts $ noBorders simpleTabbed
+fullscreenLayout = named "fullscreen" $ noBorders Full
 
 basicLayout = Tall nmaster delta ratio where
     nmaster = 1
     delta   = 3/100
     ratio   = 1/2
-
 
 
 -- MAIN --

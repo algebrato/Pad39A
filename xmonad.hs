@@ -8,6 +8,8 @@ import XMonad.Util.CustomKeys
 import XMonad.Util.Font
 
 import XMonad.Actions.CycleWS
+import XMonad.Actions.GridSelect
+
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
@@ -58,8 +60,9 @@ myKeys conf = M.fromList $[
 	((altMask, xK_Tab), windows S.focusDown),
 	((altMask .|. controlMask .|. shiftMask, xK_Left), shiftToPrev),
 	((altMask .|. controlMask .|. shiftMask, xK_Right), shiftToNext),
-    ((winMask .|. altMask  , xK_k  )   , sendMessage Shrink),
-    ((winMask .|. altMask  , xK_l )    , sendMessage Expand)
+	((winMask .|. altMask  , xK_k  )   , sendMessage Shrink),
+	((winMask .|. altMask  , xK_l )    , sendMessage Expand),
+	((myMask, xK_w), goToSelected defaultGSConfig)
 	]
 
 

@@ -40,7 +40,7 @@ fi
 
 SCALE=`echo "($HRES/768*15)/5" | bc -l`
 SCALE=`echo ${SCALE%.*}`
-FONTSZ=`echo "$SCALE*5*0.85" | bc -l`
+FONTSZ=`echo "$SCALE*5*0.75" | bc -l`
 HBAR=`echo "$SCALE*5" | bc -l`
 WRES=`echo "($WRES-100)" | bc -l`
 

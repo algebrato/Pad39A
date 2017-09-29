@@ -106,9 +106,9 @@ imLayout = avoidStruts $ reflectHoriz $ withIMs ratio rosters chatLayout where
 
 data AddRosters a = AddRosters Rational [Property] deriving (Read, Show)
 
-instance LayoutModifier AddRosters Window where
-	modifyLayout (AddRosters ratio props) = applyIMs ratio props
-	modifierDescription _                = "IMs"
+--instance LayoutModifier AddRosters Window where
+--	modifyLayout (AddRosters ratio props) = applyIMs ratio props
+--	modifierDescription _                = "IMs"
 
 withIMs :: LayoutClass l a => Rational -> [Property] -> l a -> ModifiedLayout AddRosters l a
 withIMs ratio props = ModifiedLayout $ AddRosters ratio props
@@ -119,7 +119,7 @@ hasAnyProperty [] _ = return False
 hasAnyProperty (p:ps) w = do
     b <- hasProperty p w
     if b then return True else hasAnyProperty ps w
-applyIMs :: (LayoutClass a b) => Rational
+--applyIMs :: (LayoutClass a b) => Rational
 	
 --applyIMs :: (LayoutClass l Window) =>
 --               Rational

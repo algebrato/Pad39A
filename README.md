@@ -1,5 +1,6 @@
 # Pad39A
-Pad39A is a XMonad Desktop Environment 
+Pad39A is a light and easy configurable XMonad Desktop Environment.
+
 
 [![Build Status](https://travis-ci.org/algebrato/Pad39A.svg?branch=master)](https://travis-ci.org/algebrato/Pad39A)
 

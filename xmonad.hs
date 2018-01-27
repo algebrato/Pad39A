@@ -66,9 +66,9 @@ myKeys conf = M.fromList $[
 	((myMask .|. controlMask, xK_Left),  prevWS),
 	((myMask .|. controlMask, xK_Right), nextWS),
 	((myMask, xK_space), sendMessage NextLayout),
-	((altMask, xK_Tab), windows S.focusDown),
-	((altMask .|. controlMask .|. shiftMask, xK_Left), shiftToPrev),
-	((altMask .|. controlMask .|. shiftMask, xK_Right), shiftToNext),
+	((myMask, xK_Tab), windows S.focusDown),
+	((myMask .|. controlMask .|. shiftMask, xK_Left), shiftToPrev),
+	((myMask .|. controlMask .|. shiftMask, xK_Right), shiftToNext),
 	((winMask .|. altMask  , xK_k  )   , sendMessage Shrink),
 	((winMask .|. altMask  , xK_l )    , sendMessage Expand),
 	((myMask, xK_w), goToSelected defaultGSConfig)

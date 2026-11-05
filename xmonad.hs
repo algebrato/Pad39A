@@ -9,10 +9,11 @@ import XMonad.Config.Gnome
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.CustomKeys
 import XMonad.Util.Font
-import XMonad.Util.WindowProperties
+import XMonad.Util.WindowProperties (Property(..), hasProperty)
 
 import XMonad.Actions.CycleWS
-import XMonad.Actions.GridSelect
+import XMonad.Actions.GridSelect (goToSelected, buildDefaultGSConfig)
+import qualified XMonad.StackSet as W
 
 import XMonad.Layout.Tabbed
 import XMonad.Layout.Named
@@ -41,6 +42,7 @@ myConf = gnomeConfig
 altMask = mod1Mask
 winMask = mod4Mask
 myMask  = altMask
+enterKey = xK_Return
 myNB  = "#0000FF"
 myFC  = "#FF0000"
 
@@ -56,7 +58,7 @@ isFullscreen = (== "fullscreen")
 -- KEYBINDING IN FUNZIONE A myMask --
 myKeys conf = M.fromList $[
 	((myMask, xK_F5), spawn $ XMonad.terminal conf ),
-	((myMask, xK_F5), spawn "xterm"),
+	((myMask, enterKey), spawn "gnome-terminal"),
 	((myMask, xK_F2), spawn "dmenu_run -fn -misc-fixed-*-r-*-*-15-*-*-*-*-*-*-* "),
 	((myMask, xK_F8), spawn "xbacklight -dec 10"),
 	((myMask, xK_F9), spawn "xbacklight -inc 10"),
@@ -71,27 +73,22 @@ myKeys conf = M.fromList $[
 	((myMask .|. controlMask .|. shiftMask, xK_Right), shiftToNext),
 	((winMask .|. altMask  , xK_k  )   , sendMessage Shrink),
 	((winMask .|. altMask  , xK_l )    , sendMessage Expand),
-	((myMask, xK_w), goToSelected defaultGSConfig)
+	((myMask, xK_w), goToSelected (buildDefaultGSConfig (\w b -> return ("", ""))))
 	]
 
 
 -- CONFIGURAZIONE DEL LAYOUT --
 
-myLayout =  windowNavigation $ fullscreen $ normal  where
+myLayout =  avoidStruts $ windowNavigation $ (onWorkspace "fullscreen" fullscreenLayout $ normal) where
 	normal = tallLayout ||| wideLayout ||| tabbedLayout
-	fullscreen = onWorkspace "fullscreen" fullscreenLayout
-	im = onWorkspace "im" imLayout
-
-
-tallLayout   = named "tall" $ avoidStruts $ subTabbed $ basicLayout
-wideLayout   = named "wide" $ avoidStruts $ subTabbed $ Mirror basicLayout
-tabbedLayout = named "tab"  $ avoidStruts $ noBorders simpleTabbed
-fullscreenLayout = named "fullscreen" $ noBorders Full
-
-basicLayout = Tall nmaster delta ratio where
-    nmaster = 1
-    delta   = 3/100
-    ratio   = 1/2
+	tallLayout   = named "tall" $ subTabbed $ basicLayout
+	wideLayout   = named "wide" $ subTabbed $ Mirror basicLayout
+	tabbedLayout = named "tab"  $ noBorders simpleTabbed
+	fullscreenLayout = named "fullscreen" $ noBorders Full
+	basicLayout = Tall nmaster delta ratio where
+	    nmaster = 1
+	    delta   = 3/100
+	    ratio   = 1/2
 
 
 -- ROSTER PER IM-LAYOUT --
@@ -101,7 +98,7 @@ imLayout = avoidStruts $ reflectHoriz $ withIMs ratio rosters chatLayout where
 	ratio		= 1/6
 	rosters		= [skypeRoster, pidginRoster]
 	pidginRoster	= And (ClassName "Pidgin") (Role "buddy_list")
-	skypeRoster	= (ClassName "Skype") `And` (Not (Title "Options")) `And` (Not (Role "Chats")) `And` (Not (Role "CallWindowForm"))
+	skypeRoster	= (ClassName "Skype") `And` (XMonad.Util.WindowProperties.Not (Title "Options")) `And` (XMonad.Util.WindowProperties.Not (Role "Chats")) `And` (XMonad.Util.WindowProperties.Not (Role "CallWindowForm"))
 
 
 data AddRosters a = AddRosters Rational [Property] deriving (Read, Show)
@@ -144,8 +141,9 @@ hasAnyProperty (p:ps) w = do
 main = 
 	do
 	xmproc <- spawnPipe "xmobar"
-	xmonad $ myConf {
-	  logHook = dynamicLogWithPP xmobarPP{
+	xmonad $ docks myConf {
+	  manageHook = manageDocks <+> manageHook myConf
+	  , logHook = dynamicLogWithPP xmobarPP{
  	    ppOutput = hPutStrLn xmproc 
 	    , ppLayout = const "" 
 	    , ppTitle  = xmobarColor "green" "" . shorten 80
